@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MacPay</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        #result {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Расчёт ЗП в Маке</h1>
+
+    <div class="form-group">
+        <label>Должность:</label>
+        <select id="position">
+            <option value="Работник">Работник</option>
+            <option value="Менеджер">Менеджер</option>
+            <option value="Ночник">Ночник</option>
+            <option value="Инструктор">Инструктор</option>
+            <option value="Инструктор ночной смены">Инструктор ночной смены</option>
+        </select>
+    </div>
+
+    <div id="shifts">
+        <div class="shift">
+            <label>Начало смены:</label>
+            <input type="datetime-local" class="start" />
+            <label>Окончание смены:</label>
+            <input type="datetime-local" class="end" />
+        </div>
+    </div>
+
+    <button type="button" onclick="addShift()">+ Добавить смену</button>
+    <button type="button" onclick="calculate()">Рассчитать ЗП</button>
+
+    <div id="result"></div>
+
+    <script>
+        function addShift() {
+            const shifts = document.getElementById('shifts');
+            const newShift = document.createElement('div');
+            newShift.className = 'shift';
+            newShift.innerHTML = `
+                <label>Начало смены:</label>
+                <input type="datetime-local" class="start" />
+                <label>Окончание смены:</label>
+                <input type="datetime-local" class="end" />
+            `;
+            shifts.appendChild(newShift);
+        }
+
+        async function calculate() {
+            const position = document.getElementById('position').value;
+            const shiftElements = document.querySelectorAll('.shift');
+            const shifts = [];
+
+            shiftElements.forEach(el => {
+                const start = el.querySelector('.start').value;
+                const end = el.querySelector('.end').value;
+                if (start && end) {
+                    shifts.push({
+                        startTime: start,
+                        endTime: end
+                    });
+                }
+            });
+
+            const response = await fetch('/api/payroll/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ positionName: position, shifts: shifts })
+            });
+
+            const result = await response.json();
+            const resultDiv = document.getElementById('result');
+
+            if (response.ok) {
+                resultDiv.innerHTML = `
+                    <h2>Результат</h2>
+                    <p><strong>ЗП:</strong> ${result.totalSalary.toFixed(2)} ₽</p>
+                    <p><strong>Часы:</strong> ${result.totalHours.toFixed(2)}</p>
+                    <p><em>${result.message}</em></p>
+                `;
+                resultDiv.style.display = 'block';
+            } else {
+                resultDiv.innerHTML = `<p style="color: red;">Ошибка: ${result}</p>`;
+                resultDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
