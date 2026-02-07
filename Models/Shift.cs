@@ -17,8 +17,8 @@ namespace WorkPaysHer.Models
                     throw new ArgumentException("Имя коллеги не может быть пустым");
             }
 
-            if (Colleagues.Count > 10)
-                throw new ArgumentException("На смене не может быть больше 10 коллег");
+            if (Colleagues.Count > 7)
+                throw new ArgumentException("На смене не может быть больше 7 коллег");
         }
     }
 }

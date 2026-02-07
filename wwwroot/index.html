@@ -112,12 +112,16 @@
             const result = await response.json();
             const resultDiv = document.getElementById('result');
 
-            if (response.ok) {
+            if (response.ok)
+            {
                 resultDiv.innerHTML = `
-                    <h2>Результат</h2>
-                    <p><strong>ЗП:</strong> ${result.totalSalary.toFixed(2)} ₽</p>
-                    <p><strong>Часы:</strong> ${result.totalHours.toFixed(2)}</p>
-                    <p><em>${result.message}</em></p>
+                <h2>Результат</h2>
+                <img src="${result.gifUrl}" style="width:100px; height:100px; border-radius:8px;">
+                <p><strong>ЗП:</strong> ${result.totalSalary.toFixed(2)} ₽</p>
+                <p><strong>Часы:</strong> ${result.totalHours.toFixed(2)}</p>
+                <p><strong>Настроение:</strong> ${result.moodPercentage}%</p>
+                <p>${result.moodLevelMessage}</p>
+                <p><em>${result.message}</em></p>
                 `;
                 resultDiv.style.display = 'block';
             } else {
