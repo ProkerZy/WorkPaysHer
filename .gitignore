@@ -1,0 +1,29 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Dd]ebugPublic/
+[Rr]eleasePublic/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.userosscache
+*.suo
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Пароли и настройки (Важно!)
+# Если в appsettings.json есть реальные пароли, лучше не пушить его
+# Пока оставим комментарий, чтобы ты решил сам:
+# appsettings.json 
